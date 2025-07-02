@@ -1,0 +1,41 @@
+﻿@using MiniMarket.Models
+<EditForm Model="@Model" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+
+    <div>
+        <label for="name">Name:</label>
+        <InputText id="name" @bind-Value="Model.Name" />
+    </div>
+
+    <div>
+        <label for="price">Price:</label>
+        <InputNumber id="price" @bind-Value="Model.Price" />
+    </div>
+
+    <div>
+        <label for="discount">Discount:</label>
+        <InputNumber id="discount" @bind-Value="Model.Discount" />
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <InputTextArea id="description" @bind-Value="Model.Description" />
+    </div>
+
+    <button type="submit">@ButtonText</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public ProductCreateForm Model { get; set; } = new ProductCreateForm();
+    [Parameter]
+    public string ButtonText { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<ProductCreateForm> OnValidSubmit { get; set; }
+
+    public async Task OnSubmit()
+    {
+        await OnValidSubmit.InvokeAsync(Model);
+    }
+}
