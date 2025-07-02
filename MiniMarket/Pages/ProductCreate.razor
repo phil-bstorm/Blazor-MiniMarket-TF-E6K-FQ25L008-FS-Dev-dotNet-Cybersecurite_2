@@ -1,0 +1,29 @@
+﻿@page "/product/create"
+
+<h3>Product create</h3>
+
+<EditForm Model="@Model" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+    
+    <div>
+        <label for="name">Name:</label>
+        <InputText id="name" @bind-Value="Model.Name" />
+    </div>
+
+    <div>
+        <label for="price">Price:</label>
+        <InputNumber id="price" @bind-Value="Model.Price" />
+    </div>
+
+    <div>
+        <label for="discount">Discount:</label>
+        <InputNumber id="discount" @bind-Value="Model.Discount" />
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <InputTextArea id="description" @bind-Value="Model.Description" />
+    </div>
+
+    <button type="submit">Create the product!</button>
+</EditForm>

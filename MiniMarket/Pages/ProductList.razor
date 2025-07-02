@@ -1,0 +1,68 @@
+﻿@page "/product"
+
+<h3>Products</h3>
+
+<NavLink href="/product/create">Create a new product</NavLink>
+
+@if (Products is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Discount
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+        @foreach (var product in Products)
+        {
+            <tr>
+                <td>
+                    @product.Id
+                </td>
+                <td>
+                    <NavLink href="@($"/product/{product.Id}")">
+                    <span class="@(product.Discount >= 50 ? "red": "")">
+                    @product.Name
+                        </span>
+                    </NavLink>
+                </td>
+                <td>
+                    @product.Price.ToString("C")
+                </td>
+                <td>
+                    @(product.Discount) %
+                </td>
+                <td>
+                    <div>
+                        <NavLink href=@($"/product/update/{product.Id}")>🖍️</NavLink>
+                        <button @onclick="() => DeleteProduct(product.Id)">❌</button>
+                    </div>
+                    <div>
+                        <label>
+                            Quantity:
+                        </label>
+                        <input type="number"
+                               min="1"
+                               @bind="Quantities[product.Id]" />
+                        <button @onclick="() => AddToCart(product.Id)">Add to Cart</button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+}

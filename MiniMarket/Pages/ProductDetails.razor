@@ -1,0 +1,28 @@
+﻿@page "/product/{id:int}"
+@using MiniMarket.Models
+@using MiniMarket.Service
+@inject ProductService ProductService
+
+<h3>Product Details</h3>
+
+<p>name: @product.Name</p>
+<p>price: @product.Price</p>
+<p>discount: @product.Discount</p>
+<p>Total price: @(
+    product.Discount > 0
+    ? product.Price * (1 - product.Discount / 100)
+    : product.Price
+    )</p>
+<p>description: @product.Description</p>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Product? product { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await ProductService.GetProductByIdAsync(Id);
+    }
+}

@@ -1,0 +1,59 @@
+﻿@page "/cart"
+
+<h3>CartList</h3>
+
+@if (Cart is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var item in Cart.CartProducts)
+        {
+            <li>
+                <div>
+                    @item.Product.Name -
+                    @if (@item.Product.Discount != 0)
+                    {
+                        <span style="text-decoration: line-through;">
+                            @item.Product.Price.ToString("C")
+                        </span>
+                        <span class="@(item.Product.Discount >= 50 ? "red": "")">
+                            @((item.Product.Price - (item.Product.Price * item.Product.Discount / 100)).ToString("C"))
+                        </span>
+
+                        <span>
+                            (Total:@(((item.Product.Price - (item.Product.Price * item.Product.Discount / 100)) * item.Quantity).ToString("C")))
+                        </span>
+                    }
+                    else
+                    {
+                        <span>@item.Product.Price.ToString("C")</span>
+                        <span>(Total:@((item.Product.Price * item.Quantity).ToString("C")))</span>
+                    }
+                </div>
+                <div>
+                    <label for="quantity">
+                        Quantity:
+                        <input type="number" id="quantity" @bind="item.Quantity" min="1" />
+                    </label>
+                </div>
+                <div>
+                    <button @onclick="() => RemoveFromCart(item.Product.Id)">❌</button>
+                </div>
+            </li>
+        }
+    </ul>
+
+    <button @onclick="ClearCart">Clear cart</button>
+
+    <div>
+        <strong>
+            Total: @(
+         GetTotalPrice().ToString("C")
+         )
+        </strong>
+        <button>Checkout</button>
+    </div>
+}
