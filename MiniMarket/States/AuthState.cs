@@ -37,5 +37,10 @@ namespace MiniMarket.States
 
             return new AuthenticationState(new ClaimsPrincipal());
         }
+
+        public void NotifyStateChanged()
+        {
+            NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        }
     }
 }
