@@ -1,9 +1,12 @@
-﻿using MiniMarket.Models;
+﻿using Microsoft.AspNetCore.Components;
+using MiniMarket.Models;
+using System.Net.Http.Json;
 
 namespace MiniMarket.Service
 {
     public class ProductService
     {
+        // A supprimer quand toutes les méthodes utiliseront l'API
         public List<Product> Products { get; set; } = new List<Product>() {
             new Product(1, "Apple", 2, 0, "Fresh red apples"),
             new Product(2, "Banana", 1, 0, "Ripe yellow bananas"),
@@ -14,9 +17,20 @@ namespace MiniMarket.Service
             new Product(7, "Strawberry", 7, 15, "Delicious strawberries with a 15% discount")
         };
 
-        public Task<List<Product>> GetProductsAsync()
+        private readonly HttpClient _httpClient;
+
+        public ProductService(HttpClient httpClient) {
+            _httpClient = httpClient;
+        }
+
+        public async Task<List<ProductL>> GetProductsAsync()
         {
-            return Task.FromResult(Products);
+            var response = await _httpClient.GetFromJsonAsync<List<ProductL>>("api/product");
+            if(response != null)
+            {
+                return response;
+            }
+            return [];
         }
 
         public Task<Product?> GetProductByIdAsync(int id)
