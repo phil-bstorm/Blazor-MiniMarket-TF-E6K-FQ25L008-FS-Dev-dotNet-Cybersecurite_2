@@ -12,11 +12,11 @@ namespace MiniMarket.Service
         private readonly IJSRuntime _jsRuntime;
         private readonly AuthenticationStateProvider _authState;
 
-        public AuthService(HttpClient httpClient, 
+        public AuthService(IHttpClientFactory httpClientFactory, 
             IJSRuntime jSRuntime, 
             AuthenticationStateProvider authState)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient("API");
             _jsRuntime = jSRuntime;
             _authState = authState;
         }

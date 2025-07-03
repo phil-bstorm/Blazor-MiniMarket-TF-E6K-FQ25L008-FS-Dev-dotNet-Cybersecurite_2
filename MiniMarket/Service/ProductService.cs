@@ -19,8 +19,8 @@ namespace MiniMarket.Service
 
         private readonly HttpClient _httpClient;
 
-        public ProductService(HttpClient httpClient) {
-            _httpClient = httpClient;
+        public ProductService(IHttpClientFactory httpClientFactory) {
+            _httpClient = httpClientFactory.CreateClient("API");
         }
 
         public async Task<List<ProductL>> GetProductsAsync()
@@ -39,21 +39,9 @@ namespace MiniMarket.Service
             return Task.FromResult(product);
         }
 
-        public Task CreateProductAsync(ProductCreateForm form)
+        public async Task CreateProductAsync(ProductCreateForm form)
         {
-            int id = Products.Count > 0 ? Products.Max(p => p.Id) + 1 : 1;
-            Product newProduct = new Product
-            {
-                Id = id,
-                Name = form.Name,
-                Price = form.Price,
-                Discount = form.Discount,
-                Description = form.Description
-            };
-            newProduct.Id = id;
-
-            Products.Add(newProduct);
-            return Task.CompletedTask;
+            var response = await _httpClient.PostAsJsonAsync("api/product", form);
         }
 
         public Task UpdateProductAsync(Product product)
