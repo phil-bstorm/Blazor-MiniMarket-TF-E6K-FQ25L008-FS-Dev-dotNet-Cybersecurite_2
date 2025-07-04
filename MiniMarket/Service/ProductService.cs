@@ -1,70 +1,99 @@
-﻿using Microsoft.AspNetCore.Components;
-using MiniMarket.Models;
+﻿using MiniMarket.Models;
 using System.Net.Http.Json;
 
 namespace MiniMarket.Service
 {
     public class ProductService
     {
-        // A supprimer quand toutes les méthodes utiliseront l'API
-        public List<Product> Products { get; set; } = new List<Product>() {
-            new Product(1, "Apple", 2, 0, "Fresh red apples"),
-            new Product(2, "Banana", 1, 0, "Ripe yellow bananas"),
-            new Product(3, "Orange", 3, 10, "Juicy oranges with a 10% discount"),
-            new Product(4, "Grapes", 4, 50, "Sweet grapes with a 50% discount"),
-            new Product(5, "Mango", 5, 0, "Tropical mangoes"),
-            new Product(6, "Pineapple", 6, 0, "Fresh pineapples"),
-            new Product(7, "Strawberry", 7, 15, "Delicious strawberries with a 15% discount")
-        };
-
         private readonly HttpClient _httpClient;
 
-        public ProductService(IHttpClientFactory httpClientFactory) {
+        public ProductService(IHttpClientFactory httpClientFactory)
+        {
             _httpClient = httpClientFactory.CreateClient("API");
         }
 
+        /// <summary>
+        /// Récupère tous les produits depuis l'API
+        /// </summary>
         public async Task<List<ProductL>> GetProductsAsync()
         {
-            var response = await _httpClient.GetFromJsonAsync<List<ProductL>>("api/product");
-            if(response != null)
+            try
             {
-                return response;
+                var response = await _httpClient.GetFromJsonAsync<List<ProductL>>("api/product");
+                return response ?? [];
             }
-            return [];
-        }
-
-        public Task<Product?> GetProductByIdAsync(int id)
-        {
-            var product = Products.FirstOrDefault(p => p.Id == id);
-            return Task.FromResult(product);
-        }
-
-        public async Task CreateProductAsync(ProductCreateForm form)
-        {
-            var response = await _httpClient.PostAsJsonAsync("api/product", form);
-        }
-
-        public Task UpdateProductAsync(Product product)
-        {
-            var existingProduct = Products.FirstOrDefault(p => p.Id == product.Id);
-            if (existingProduct != null)
+            catch (Exception ex)
             {
-                existingProduct.Name = product.Name;
-                existingProduct.Price = product.Price;
-                existingProduct.Discount = product.Discount;
-                existingProduct.Description = product.Description;
+                Console.WriteLine($"Erreur GetProductsAsync: {ex.Message}");
+                return [];
             }
-            return Task.CompletedTask;
         }
 
-        public Task DeleteProductAsync(int id)
+        /// <summary>
+        /// Récupère un produit par son identifiant via l'API
+        /// </summary>
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            var product = Products.FirstOrDefault(p => p.Id == id);
-            if (product != null)
+            try
             {
-                Products.Remove(product);
+                return await _httpClient.GetFromJsonAsync<Product>($"api/product/{id}");
             }
-            return Task.CompletedTask;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur GetProductByIdAsync({id}): {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Crée un nouveau produit via l'API
+        /// </summary>
+        public async Task<bool> CreateProductAsync(ProductCreateForm form)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/product", form);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur CreateProductAsync: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Met à jour un produit existant via l'API
+        /// </summary>
+        public async Task<bool> UpdateProductAsync(Product product)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"api/product/{product.Id}", product);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur UpdateProductAsync({product.Id}): {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Supprime un produit par son identifiant via l'API
+        /// </summary>
+        public async Task<bool> DeleteProductAsync(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/product/{id}");
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur DeleteProductAsync({id}): {ex.Message}");
+                return false;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace MiniMarket.Models
 {
+    // Formulaire utiliser pour créer un produit (ce formulaire est conforme au données attendue par l'API)
     public class ProductCreateForm
     {
         [Required(ErrorMessage = "Name is required.")]

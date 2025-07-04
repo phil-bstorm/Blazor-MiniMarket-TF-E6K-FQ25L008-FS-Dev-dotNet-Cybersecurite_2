@@ -10,20 +10,25 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// Ancien HttpClient qui est remplacé par les lignes suivantes "AddHttpClient"
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7104/") });
 
+
 builder.Services.AddScoped<TokenInterceptor>();
-builder.Services.AddHttpClient("API", client => {
+// nécessite d'installer Microsoft.Extensions.Http
+builder.Services.AddHttpClient("API", client =>
+{
     client.BaseAddress = new Uri("https://localhost:7104/");
 }).AddHttpMessageHandler<TokenInterceptor>();
 
-
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<CartService>();
-builder.Services.AddScoped<AuthService>();
+// Mise à disposition des services utilisés dans l'application
+// (Les services sont des classes qui contiennent la logique métier de l'application et qui communique avec l'API)
+builder.Services.AddScoped<ProductService>(); // Manipulation des produits
+builder.Services.AddScoped<CartService>(); // Gestion du panier
+builder.Services.AddScoped<AuthService>(); // Authentification de l'utilisateurs
 
 // Authentification
-builder.Services.AddAuthorizationCore();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthState>();
+builder.Services.AddAuthorizationCore(); // active le système d'autorisation, ce qui permet de gérer les rôles et les permissions
+builder.Services.AddScoped<AuthenticationStateProvider, AuthState>(); // Gestion de l'état d'authentification de l'utilisateur
 
 await builder.Build().RunAsync();

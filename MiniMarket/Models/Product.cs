@@ -1,5 +1,6 @@
 ﻿namespace MiniMarket.Models
 {
+    // Model representent un produit (avec détails) reçu par l'API
     public class Product
     {
         public int Id { get; set; }

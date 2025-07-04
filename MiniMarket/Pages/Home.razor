@@ -6,6 +6,12 @@
 
 Welcome to your new app.
 
+@* AuthorizeView affiche si les éléments enfant si l'utilisateur est connecté *@
 <AuthorizeView>
     <p>Tu es connecté!</p>
+</AuthorizeView>
+
+@* AuthorizeView avec Roles="Admin" vérifie si l'utilisateur possède le role Admin (dans son token) *@
+<AuthorizeView Roles="Admin">
+	<p>Tu es un admin!</p>
 </AuthorizeView>

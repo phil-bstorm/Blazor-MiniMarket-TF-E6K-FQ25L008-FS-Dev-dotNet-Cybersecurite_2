@@ -1,6 +1,17 @@
 ﻿@page "/product/create"
-@attribute [Authorize(Roles="Admin")]
+@* Indique que ce composant est accessible à l’URL /product/create *@
+
+@attribute [Authorize(Roles = "Admin")]
+@* Restreint l'accès à cette page aux utilisateurs authentifiés ayant le rôle "Admin".
+   Blazor vérifiera le ClaimsPrincipal pour appliquer la restriction. *@
 
 <h3>Product create</h3>
 
-<ProductFormulaire ButtonText="Create the new product" Model="@Model" OnValidSubmit="OnSubmit" />
+@* Utilise un composant réutilisable ProductFormulaire pour afficher le formulaire de création de produit.
+   On lui passe trois paramètres :
+   - ButtonText : le texte du bouton de soumission.
+   - Model : le modèle de données du produit à remplir.
+   - OnValidSubmit : méthode appelée lorsque le formulaire est soumis et valide. *@
+<ProductFormulaire ButtonText="Create the new product"
+                   Model="@Model"
+                   OnValidSubmit="OnSubmit" />

@@ -1,28 +1,33 @@
-﻿@page "/product/{id:int}"
+﻿@page "/product/{id:int}" 
+@* Page accessible à l'URL /product/{id} où id est un entier *@
+
 @using MiniMarket.Models
 @using MiniMarket.Service
-@inject ProductService ProductService
+@* Service pour récupérer les données du produit *@
+@inject ProductService ProductService 
 
 <h3>Product Details</h3>
 
 <p>name: @product.Name</p>
 <p>price: @product.Price</p>
 <p>discount: @product.Discount</p>
-<p>Total price: @(
+
+<p>Total price: @( 
     product.Discount > 0
-    ? product.Price * (1 - product.Discount / 100)
-    : product.Price
-    )</p>
+    ? product.Price * (1 - product.Discount / 100) 
+    : product.Price 
+)</p>
+
 <p>description: @product.Description</p>
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public int Id { get; set; } // Identifiant du produit passé dans l'URL
 
-    private Product? product { get; set; } = null;
+    private Product? product { get; set; } = null; // Détail du produit récupéré
 
     protected override async Task OnInitializedAsync()
     {
-        product = await ProductService.GetProductByIdAsync(Id);
+        product = await ProductService.GetProductByIdAsync(Id); // Charge le produit à l'initialisation
     }
 }

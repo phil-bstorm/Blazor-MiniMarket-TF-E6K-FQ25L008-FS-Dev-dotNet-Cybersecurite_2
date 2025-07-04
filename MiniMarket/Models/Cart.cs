@@ -1,5 +1,6 @@
 ﻿namespace MiniMarket.Models
 {
+    //  Models servant à la gestion du panier d'achats
     public class Cart
     {
         public List<CartProduct> CartProducts { get; set; } = [];

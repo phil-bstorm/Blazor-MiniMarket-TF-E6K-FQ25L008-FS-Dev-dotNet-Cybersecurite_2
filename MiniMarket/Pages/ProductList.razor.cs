@@ -7,22 +7,22 @@ namespace MiniMarket.Pages
     public partial class ProductList
     {
         [Inject]
-        public ProductService ProductService { get; set; } = null!;
-        [Inject]
-        public CartService CartService { get; set; } = null!;
+        public ProductService ProductService { get; set; } = null!; // Service pour gérer les produits
 
-        public List<ProductL>? Products { get; set; } = null;
-        public Dictionary<int, int> Quantities { get; set; } = new();
+        [Inject]
+        public CartService CartService { get; set; } = null!; // Service pour gérer le panier
+
+        public List<ProductL>? Products { get; set; } = null; // Liste des produits à afficher
+        public Dictionary<int, int> Quantities { get; set; } = new(); // Quantité choisie pour chaque produit
 
         protected override async Task OnInitializedAsync()
         {
-            Products = await ProductService.GetProductsAsync();
+            Products = await ProductService.GetProductsAsync(); // Récupère la liste des produits
             if (Products != null)
             {
-                Console.WriteLine("foreach");
                 foreach (var product in Products)
                 {
-                    Quantities[product.Id] = 1; // valeur par défaut
+                    Quantities[product.Id] = 1; // Quantité par défaut à 1
                 }
             }
         }
@@ -31,8 +31,8 @@ namespace MiniMarket.Pages
         {
             if (Products != null)
             {
-                await ProductService.DeleteProductAsync(id);
-                Products = await ProductService.GetProductsAsync();
+                await ProductService.DeleteProductAsync(id); // Supprime le produit
+                Products = await ProductService.GetProductsAsync(); // Recharge la liste après suppression
             }
         }
 
@@ -41,15 +41,15 @@ namespace MiniMarket.Pages
             ProductL? p = Products?.FirstOrDefault(x => x.Id == productId);
             if (p is null)
             {
-                return; // Produit non trouvé
+                return; // Ne rien faire si le produit est introuvable
             }
 
             CartProduct cp = new CartProduct
             {
                 Product = p,
-                Quantity = Quantities.ContainsKey(productId) ? Quantities[productId] : 1,
+                Quantity = Quantities.ContainsKey(productId) ? Quantities[productId] : 1, // Récupère la quantité choisie
             };
-            await CartService.AddToCartAsync(cp);
+            await CartService.AddToCartAsync(cp); // Ajoute l'article au panier
         }
     }
 }

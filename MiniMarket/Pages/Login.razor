@@ -1,21 +1,32 @@
 ﻿@page "/login"
+@* Indique que ce composant est accessible à l'URL /login *@
 
 <h3>Login</h3>
 
+@* Formulaire de connexion basé sur le modèle C# LoginForm.
+   Il utilise la validation basée sur les annotations de données (DataAnnotations). *@
 <EditForm Model="Model" OnValidSubmit="OnSubmit">
+    @* Ajoute un validateur qui utilise les DataAnnotations définies dans le modèle.
+       Sans ce composant, les validations côté client ne fonctionnent pas. *@
     <DataAnnotationsValidator />
 
     <div>
         <label for="username">Username:</label>
+        @* Champ de saisie lié à la propriété Username du modèle.
+           La directive @bind-Value assure la synchronisation bidirectionnelle entre le champ et la propriété Model.Username. *@
         <InputText id="username" @bind-Value="Model.Username" />
+
+        @* Affiche un message d'erreur spécifique à Username si la validation échoue *@
         <ValidationMessage For="@(() => Model.Username)" />
     </div>
 
     <div>
         <label for="password">Password:</label>
-        <InputText id="password" @bind-Value="Model.Password" />
+        <InputText id="password" @bind-Value="Model.Password" type="password" />
         <ValidationMessage For="@(() => Model.Password)" />
     </div>
 
+    @* Bouton pour soumettre le formulaire.
+       Déclenche l'appel à la méthode OnSubmit uniquement si toutes les validations passent. *@
     <button type="submit">Login!</button>
 </EditForm>
