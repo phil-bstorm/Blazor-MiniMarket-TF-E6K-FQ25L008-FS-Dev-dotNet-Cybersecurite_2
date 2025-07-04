@@ -91,20 +91,22 @@ Visual Studio va générer l’arborescence d’un projet Blazor WebAssembly Sta
 2.  Créer un state pour gérer l’authentification (par exemple, `AuthState.cs` dans le dossier `State`).
     3 . Utiliser le middleware pour intercepter les requêtes et ajouter le token JWT si nécessaire (ce qui permet d'utiliser les routes sécurisées de l'API).
 
-        - Middleware : `TokenInterceptor.cs` dans le dossier `Middlewares`.
-        - sans oublié d'ajouter le middleware dans `program.cs` :
+    - Middleware : `TokenInterceptor.cs` dans le dossier `Middlewares`.
+    - sans oublié d'ajouter le middleware dans `program.cs` :
 
-          ```csharp
-              builder.Services.AddScoped<TokenInterceptor>();
-              builder.Services.AddHttpClient("API", client =>
-              {
-                  client.BaseAddress = new Uri("https://localhost:7104/");
-              }).AddHttpMessageHandler<TokenInterceptor>();
-          ```
+      ```csharp
+          builder.Services.AddScoped<TokenInterceptor>();
+          // nécessite d'installer Microsoft.Extensions.Http
+          builder.Services.AddHttpClient("API", client =>
+          {
+              client.BaseAddress = new Uri("https://localhost:7104/");
+          }).AddHttpMessageHandler<TokenInterceptor>();
+      ```
 
-3.  Page de connexion (par exemple, `Login.razor` dans le dossier `Pages`) et redirection vers le dashboard après connexion réussie.
-4.  Protéger les routes/pages nécessitant une authentification en utilisant l’attribut `[Authorize]` sur les composants Razor.
-5.  Gérer la déconnexion en supprimant le token et en redirigeant vers la page de connexion.
+3.  Dans le fichier `app.razor`, ajouter le composant `CascadingAuthenticationState` pour fournir l'état d'authentification à l'application et remplacer le `RouterView` par `AuthorizeRouteView` (voir fichier `app.razor`)
+4.  Page de connexion (par exemple, `Login.razor` dans le dossier `Pages`) et redirection vers le dashboard après connexion réussie.
+5.  Protéger les routes/pages nécessitant une authentification en utilisant l’attribut `[Authorize]` sur les composants Razor.
+6.  Gérer la déconnexion en supprimant le token et en redirigeant vers la page de connexion.
 
 ## Models
 
